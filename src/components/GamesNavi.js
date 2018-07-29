@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import GameNaviLink from './GameNaviLink';
 
 class GamesNavi extends Component {
   constructor(props) {
@@ -8,11 +8,6 @@ class GamesNavi extends Component {
       viewAll: false,
     }
     this.handleViewAll = this.handleViewAll.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick(e) {
-    
   }
 
   handleViewAll() {
@@ -28,12 +23,7 @@ class GamesNavi extends Component {
           {this.props.games.map((value, index, array) => {
             return index < 20 || this.state.viewAll ? (
               <li key={value.cate_id}>
-                <Link to={{
-                  pathname: `/games/${value.short_name}`,
-                  state: {
-                    value
-                  },
-                }}>{value.game_name}</Link>
+                <GameNaviLink game={value} />
               </li>
             ) : null;
           })}
