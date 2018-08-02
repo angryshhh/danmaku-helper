@@ -11,48 +11,82 @@ const net = require('net');
 // import { createTCPMessage, parseTCPMessage } from '../utils/danmakuTCPUtils';
 const { createTCPMessage, parseTCPMessage } = require('../utils/danmakuTCPUtils');
 
-io.on('connection', socket => {
-  console.log(`connected with react ${socket.client.id}`);
-  socket.on('roomId', socketData => {
+io.on('connection', reactSocket => {
+  let heartbeatTimer = -1;
+  const tcpSocket = new net.Socket();
 
-    const client = net.createConnection({
+  console.log(`connected with react ${reactSocket.client.id}`);
+  reactSocket.on('roomId', reactSocketData => {
+
+    tcpSocket.connect({
       port: 8601,
       host: 'openbarrage.douyutv.com',
     }, () => {
       console.log('connected to danmaku server');
-      client.write(createTCPMessage(`type@=loginreq/roomid@=${socketData}/`));
+      tcpSocket.write(createTCPMessage(`type@=loginreq/roomid@=${reactSocketData}/`));
     });
 
-    client.on('data', tcpData => {
-      // console.log('recieve data');
-      const obj = parseTCPMessage(tcpData);
+    tcpSocket.on('data', tcpSocketData => {
+      const obj = parseTCPMessage(tcpSocketData);
       switch(obj.type) {
         case 'loginres':
-          client.write(createTCPMessage(`type@=joingroup/rid@=${socketData}/gid@=-9999/`));
+          tcpSocket.write(createTCPMessage(`type@=joingroup/rid@=${reactSocketData}/gid@=-9999/`));
+          heartbeatTimer = setInterval(() => {
+            console.log('send heartbeat to danmaku server');
+            tcpSocket.write(createTCPMessage('type@=mrkl/'));
+          }, 45000);
           break;
-        // case 'chatmsg':
-        //   console.log(`${obj.nn}(lv${obj.level}): ${obj.txt}`);
-        //   break;
+        case 'pingreq':
+          console.log(`danmaku server heartbeat back at ${obj.tick}`);
+          break;
         case 'error':
           console.log(obj);
           break;
+        case 'ranklist':
+          console.log('handle ranklist');
+          break;
+        case 'ruclp':
+          console.log('handle 用户点赞推送通知消息');
+          break;
+        case 'online_noble_list':
+          console.log('handle 房间贵族列表广播消息');
+          break;
+        case 'ul_ranklist':
+          console.log('handle 房间用户等级排行榜');
+          break;
+        case 'frank':
+          console.log('handle 粉丝排行榜消息');
+          break;
         default:
-          //console.log(obj);
-          socket.emit(obj.type, obj);
+          if(obj.type) {
+            // reactSocket.emit(obj.type, obj);
+            reactSocket.send(obj);
+          } else {
+            console.log('this message has no type');
+            // console.log(obj);
+          }
           break;
       }
     });
 
-    client.on('end', () => {
-      console.log('disconnected from danmaku server');
+    tcpSocket.on('end', () => {
+      console.log('end danmaku server');
     });
 
+    tcpSocket.on('close', () => {
+      console.log('close danmaku server');
+    })
 
-    // socket.emit('hello back', 'wode');
   });
 
-  socket.on('disconnect', () => {
-    console.log(`disconnected from react ${socket.client.id}`);
+  reactSocket.on('disconnect', () => {
+    clearInterval(heartbeatTimer);
+
+    reactSocket.disconnect(true);  // component start the disconnection of the socket, server has to close it too, and the 'true' is required, check it on the api
+    console.log(`disconnected from react ${reactSocket.client.id}`);
+
+    tcpSocket.end(createTCPMessage('type@=logout/'));  // it will receive error message, not knowing why
+    console.log('disconnected from danmaku server');
   });
 })
 

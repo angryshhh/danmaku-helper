@@ -7,27 +7,46 @@ class Room extends Component {
     this.state = {
       danmakus: [],
     };
+
+    this.socket = io('http://localhost:3010', { autoConnect: false });
+    this.socket.on('connect', () => {
+      console.log('connect');
+      this.socket.emit('roomId', this.props.match.params.roomId);
+    });
+    this.socket.on('disconnect', () => {
+      console.log('disconnect');
+    });
+
+    // handle danmaku
+    // this.socket.on('chatmsg', data => {
+    //   // console.log(data);
+    //   this.setState({
+    //     danmakus: [...this.state.danmakus, data],
+    //   });
+    // });
+
+    this.socket.on('message', data => {
+      switch(data.type) {
+        case 'chatmsg':
+          this.setState({
+            danmakus: [...this.state.danmakus.slice(-39), data],  // limit the danmaku list length to 40
+          });
+          break;
+        default:
+          console.log(data.type);
+          break;
+      }
+    });
+
   }
 
   componentDidMount() {
-    const socket = io('http://localhost:3010');
-    socket.on('connect', () => {
-      console.log('connect');
-      socket.emit('roomId', this.props.match.params.roomId);
-    });
-    socket.on('chatmsg', data => {
-      console.log(data);
-      this.setState({
-        danmakus: [...this.state.danmakus, data],
-      });
-    });
-    socket.on('disconnect', () => {
-      console.log('disconnect');
-    });
+    this.socket.open();
+    
   }
 
   componentWillUnmount() {
-    
+    this.socket.close();
   }
 
   render() {
@@ -36,8 +55,8 @@ class Room extends Component {
         <h1>room {this.props.match.params.roomId}</h1>
         <ul>
           {this.state.danmakus.map(item => {
-            return <li>
-              {parseInt(item.gt) ? item.gt : null}{item.nn}(lv.{item.level}): {item.txt}
+            return <li key={item.cid}>
+              {item.nl ? `贵族${item.nl} ` : ''}{item.bnn.length ? `[${item.bnn}${item.bl}] ` : ''}{item.nn}(lv.{item.level}): {item.txt}
             </li>;
           })}
         </ul>
