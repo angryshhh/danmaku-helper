@@ -23,7 +23,7 @@ function createTCPMessage(serializedString) {
  * returns a obj transferred from the received buffer
  * @param {Buffer} receivedBuffer 
  */
-function analyzeTCPMessage(receivedBuffer) {
+function parseTCPMessage(receivedBuffer) {
   const obj = {};
   const dataStr = receivedBuffer.toString('utf8', 12);  // remove head field
   dataStr.split('/').map(value => {
@@ -35,8 +35,8 @@ function analyzeTCPMessage(receivedBuffer) {
   return obj;
 }
 
-// export { createTCPMessage, analyzeTCPMessage };
+// export { createTCPMessage, parseTCPMessage };
 module.exports = {
   createTCPMessage: createTCPMessage,
-  analyzeTCPMessage: analyzeTCPMessage
+  parseTCPMessage: parseTCPMessage
 };

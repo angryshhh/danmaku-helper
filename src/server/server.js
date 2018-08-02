@@ -1,8 +1,8 @@
 const Koa = require('koa');
 const app = new Koa();
 const net = require('net');
-// import { createTCPMessage, analyzeTCPMessage } from '../utils/danmakuTCPUtils';
-const { createTCPMessage, analyzeTCPMessage } = require('../utils/danmakuTCPUtils');
+// import { createTCPMessage, parseTCPMessage } from '../utils/danmakuTCPUtils';
+const { createTCPMessage, parseTCPMessage } = require('../utils/danmakuTCPUtils');
 
 app.use(async (ctx, next) => {
   console.log(`${ctx.request.method} ${ctx.req.url}`);
@@ -20,7 +20,7 @@ app.use(async (ctx, next) => {
   });
   client.on('data', data => {
     // console.log('recieve data');
-    const obj = analyzeTCPMessage(data);
+    const obj = parseTCPMessage(data);
     switch(obj.type) {
       case 'loginres':
         client.write(createTCPMessage('type@=joingroup/rid@=475252/gid@=-9999/'));
