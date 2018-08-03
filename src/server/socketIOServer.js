@@ -75,7 +75,7 @@ io.on('connection', reactSocket => {
 
     tcpSocket.on('close', () => {
       console.log('close danmaku server');
-    })
+    });
 
   });
 
