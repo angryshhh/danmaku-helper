@@ -24,15 +24,12 @@ function createTCPMessage(serializedString) {
  * @param {Buffer} receivedBuffer 
  */
 function parseTCPMessage(receivedBuffer) {
-  // find out that the some of the data received from danmaku server consist of several messages
-  // it's hard to separate them and sometime it causes shard, which i cannot handle
+  // some messages have array, haven't handle that yet
 
   // console.log(`handle buffer length ${receivedBuffer.length}`);
   const obj = {};
   const dataStr = receivedBuffer.toString('utf8', 12);  // remove head field
 
-  console.log('------------------------------');
-  console.log(dataStr.replace(/@A+/g, '@').replace(/@S/g, '/'));
   dataStr.replace(/@A+/g, '@').replace(/@S/g, '/').split('/').map(value => {
     if(value.length > 1) {  // remove the last string caused by the last '/'
       Object.assign(obj, {[value.split('@=')[0]]: value.split('@=')[1]});
