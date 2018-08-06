@@ -28,12 +28,16 @@ class Room extends Component {
     this.socket.on('message', data => {
       switch(data.type) {
         case 'chatmsg':
-          this.setState({
+           this.setState({
             danmakus: [...this.state.danmakus.slice(-39), data],  // limit the danmaku list length to 40
           });
           break;
+        case 'dgb':
+          break;
+        case 'uenter':
+          break;
         default:
-          console.log(data.type);
+          console.log(data);
           break;
       }
     });
