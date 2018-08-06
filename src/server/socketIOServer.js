@@ -63,7 +63,7 @@ io.on('connection', reactSocket => {
               break;
             case 'online_noble_list':
               console.log('handle 房间贵族列表广播消息');
-              console.log(obj);
+              // console.log(obj);
               break;
             case 'ul_ranklist':
               console.log('handle 房间用户等级排行榜');

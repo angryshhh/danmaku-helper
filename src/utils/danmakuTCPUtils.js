@@ -24,18 +24,27 @@ function createTCPMessage(serializedString) {
  * @param {Buffer} receivedBuffer 
  */
 function parseTCPMessage(receivedBuffer) {
-  // some messages have array, haven't handle that yet
-
-  // console.log(`handle buffer length ${receivedBuffer.length}`);
-  const obj = {};
   const dataStr = receivedBuffer.toString('utf8', 12);  // remove head field
+  return deSTT(dataStr);
+}
 
-  dataStr.replace(/@A+/g, '@').replace(/@S/g, '/').split('/').map(value => {
-    if(value.length > 1) {  // remove the last string caused by the last '/'
-      Object.assign(obj, {[value.split('@=')[0]]: value.split('@=')[1]});
+function deSTT(dataStr) {
+  const obj = {};
+  dataStr.split('/').map(keyVal => {  // '/' ends key@=value
+    if(keyVal.length > 2) { // not an empty string which is after the last '/'
+      const key = keyVal.split('@=')[0];
+      const valStr = keyVal.split('@=')[1].replace(/@S/g, '/').replace(/@A/g, '@'); // data has been STTed, translated it back
+      if(valStr.indexOf('@S/') === -1) {  // this value is not an array
+        Object.assign(obj, {[key]: valStr});
+      } else {  // this value is an array, which contains '@S/' because '/' ending the last key-value has become '@S' and an array element ends with '/'
+        Object.assign(obj, {[key]: valStr.split('/').map(arrElem => {
+          if(arrElem.length > 1) {
+            return deSTT(arrElem.replace(/@S/g, '/').replace(/@A/g, '@'));  // deSTT each array element
+          }
+        })});
+      }
     }
   });
-
   return obj;
 }
 
