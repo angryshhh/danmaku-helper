@@ -13,7 +13,7 @@ const { createTCPMessage, parseTCPMessage } = require('../utils/danmakuTCPUtils'
 
 io.on('connection', reactSocket => {
   let heartbeatTimer = -1;
-  let tempBuffer = Buffer.alloc(0);
+  let tempBuffer = Buffer.alloc(0); // message queue
   const tcpSocket = new net.Socket();
 
   console.log(`connected with react ${reactSocket.client.id}`);
@@ -48,6 +48,9 @@ io.on('connection', reactSocket => {
               break;
             case 'pingreq':
               console.log(`danmaku server pingreq at ${obj.tick}`);
+              break;
+            case 'mrkl':
+              console.log('danmaku server heartbeat back');
               break;
             case 'error':
               console.log(obj);

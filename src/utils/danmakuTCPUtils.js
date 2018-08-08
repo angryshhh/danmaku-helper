@@ -12,7 +12,7 @@ function createTCPMessage(serializedString) {
 
   const data = Buffer.from(`${serializedString}\0`); // data end with '\0'
 
-  const message = Buffer.concat([head, data]);  // combain head and data, 
+  const message = Buffer.concat([head, data]);  // combine head and data, 
   message.writeInt32LE(message.length - 4, 0);  // message length. according to the returned message, it has to minus 4, confused
   message.writeInt32LE(message.length - 4, 4);  // repeat message length
   
@@ -30,19 +30,15 @@ function parseTCPMessage(receivedBuffer) {
 
 function deSTT(dataStr) {
   const obj = {};
-  dataStr.split('/').map(keyVal => {  // '/' ends key@=value
-    if(keyVal.length > 2) { // not an empty string which is after the last '/'
-      const key = keyVal.split('@=')[0];
-      const valStr = keyVal.split('@=')[1].replace(/@S/g, '/').replace(/@A/g, '@'); // data has been STTed, translated it back
-      if(valStr.indexOf('@S/') === -1) {  // this value is not an array
-        Object.assign(obj, {[key]: valStr});
-      } else {  // this value is an array, which contains '@S/' because '/' ending the last key-value has become '@S' and an array element ends with '/'
-        Object.assign(obj, {[key]: valStr.split('/').map(arrElem => {
-          if(arrElem.length > 1) {
-            return deSTT(arrElem.replace(/@S/g, '/').replace(/@A/g, '@'));  // deSTT each array element
-          }
-        })});
-      }
+  dataStr.split('/').slice(0, -1).map(keyVal => {  // '/' ends key@=value, and remove the empty string which is after the last '/'
+    const key = keyVal.split('@=')[0];
+    const valStr = keyVal.split('@=')[1].replace(/@S/g, '/').replace(/@A/g, '@'); // data has been STTed, translated it back
+    if(valStr.indexOf('@S/') !== -1) {  // this value is an array, which contains '@S/' because '/' ending the last key-value has become '@S' and an array element ends with '/'
+      Object.assign(obj, {[key]: valStr.split('/').slice(0, -1).map(arrElem => 
+        deSTT(arrElem.replace(/@S/g, '/').replace(/@A/g, '@'))  // deSTT each array element
+      )});
+    } else {  // this value is a string  
+      Object.assign(obj, {[key]: valStr});
     }
   });
   return obj;
