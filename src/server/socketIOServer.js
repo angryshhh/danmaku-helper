@@ -55,6 +55,14 @@ io.on('connection', reactSocket => {
             case 'error':
               console.log(obj);
               break;
+            case 'gbroadcast':
+              console.log('gbroadcast contains a json, adn don\'t know what message it is');
+              console.log(obj);
+              break;
+            case 'rri':
+              console.log('rri message has something wrong, the ri key is useless');
+              console.log(obj);
+              break;
             default:
               // console.log(obj);
               reactSocket.send(obj);
