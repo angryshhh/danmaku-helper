@@ -1,35 +1,17 @@
 import React, { Component } from 'react';
-import GameNaviLink from './GameNaviLink';
+import { Link } from 'react-router-dom';
+import { Menu } from 'antd';
 
 class GamesNavi extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      viewAll: false,
-    }
-    this.handleViewAll = this.handleViewAll.bind(this);
-  }
-
-  handleViewAll() {
-    this.setState({
-      viewAll: !this.state.viewAll,
-    });
-  }
-
   render() {
     return (
-      <div>
-        <ul>
-          {this.props.games.map((value, index, array) => {
-            return index < 20 || this.state.viewAll ? (
-              <li key={value.cate_id}>
-                <GameNaviLink game={value} />
-              </li>
-            ) : null;
-          })}
-        </ul>
-        <button onClick={this.handleViewAll}>{this.state.viewAll ? '收缩' : '全部'}</button>
-      </div>
+      <Menu selectedKeys={this.props.selectedGame}>
+        {
+          this.props.games.map(value => <Menu.Item key={value.short_name}>
+            <Link to={`/games/${value.short_name}`}>{value.game_name}</Link>
+          </Menu.Item>)
+        }
+      </Menu>
     );
   }
 }

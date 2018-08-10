@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import { Layout, Menu } from 'antd'
 import GamesNavi from './GamesNavi';
 import Lives from './Lives';
+
+const { Sider, Content } = Layout;
 
 class Home extends Component {
   constructor(props){
@@ -74,11 +77,21 @@ class Home extends Component {
 
   render() {
     return (
-      <div>
-        <h1>home</h1>
-        <GamesNavi games={this.state.games} />
-        <Lives rooms={this.state.lives} />
-      </div>
+      <Layout>
+        <Sider style={{
+          overflow: 'auto',
+          height: '100vh',  // 100% viewport height
+          position: 'fixed',  // 位置被设置为 fixed 的元素，可定位于相对于浏览器窗口的指定坐标。此元素的位置可通过 "left"、"top"、"right" 以及"bottom" 属性来规定。不论窗口滚动与否，元素都会留在那个位置
+          left: 0,  // 作用于position
+        }}>
+          <GamesNavi selectedGame={this.state.chosenGame} games={this.state.games} />
+        </Sider>
+        <Content style={{
+          marginLeft: 200,  // sider width is 200
+        }}>
+          <Lives rooms={this.state.lives} />
+        </Content>
+      </Layout>
     );
   }
 }
