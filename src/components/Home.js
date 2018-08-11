@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Menu } from 'antd'
+import { Layout } from 'antd'
 import GamesNavi from './GamesNavi';
 import Lives from './Lives';
 

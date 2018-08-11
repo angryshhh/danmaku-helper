@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import { Layout, Popover, Button, message } from 'antd';
 import io from 'socket.io-client';
+import Danmakus from './Danmakus';
 
+const { Header, Content, Footer, Sider} = Layout;
 class Room extends Component {
   constructor(props) {
     super(props);
@@ -36,7 +39,8 @@ class Room extends Component {
           break;
         case 'dgb':
           if(data.bg)
-            console.log(`${data.nn}送了${data.gfid}礼物X${data.hits}，显示为${data.gs}，特效${data.eid}，大小礼物${data.bg}`);
+            message.success(`${data.nn}送了${data.gfid}礼物X${data.hits}，显示为${data.gs}，特效${data.eid}，大小礼物${data.bg}`);
+            // console.log(`${data.nn}送了${data.gfid}礼物X${data.hits}，显示为${data.gs}，特效${data.eid}，大小礼物${data.bg}`);
           // gfid: 824粉丝荧光棒, 192赞， 714怂， 193弱鸡， 520稳， 191鱼丸
           // 我他妈不研究了，在弹幕里一个一个扒（我是不是应该学个爬虫），还是大礼物好找
           // 447办卡，195飞机，显示为5，特效63，大小礼物1
@@ -53,7 +57,9 @@ class Room extends Component {
         case 'uenter':
           // if(data.nl || data.fl > '10' || data.level > '20'){
           if(parseInt(data.nl, 10) < 7 || parseInt(data.fl, 10) > 10) {
-            console.log(`${data.nl ? `${this.getNobleName(data.nl)} ` : ''}${data.nn} 进入房间${data.fl ? `，粉丝等级${data.fl}` : ''}`);
+            message.success(`${data.nl ? `${this.getNobleName(data.nl)} ` : ''}${data.nn} 进入房间${data.fl ? `，粉丝等级${data.fl}` : ''}`);
+
+            // console.log(`${data.nl ? `${this.getNobleName(data.nl)} ` : ''}${data.nn} 进入房间${data.fl ? `，粉丝等级${data.fl}` : ''}`);
             // console.log(data);
           }
           break;
@@ -141,36 +147,51 @@ class Room extends Component {
 
   render() {
     return (
-      <div>
-        <h1>room {this.props.match.params.roomId}</h1>
-        <h2>top贵族</h2>
-        <span>
-          {
-            this.state.nobleInfo.list ?
-            `${this.state.nobleInfo.list.map(item => {
-              return `${this.getNobleName(item.lev)}${item.num}个 `;
-            })},共${this.state.nobleInfo.sum}个贵族`: null
-          }
-        </span>
-        <ul>
-          {
-            this.state.nobleList.map(noble => {
-              return <li>
-                {this.getNobleName(noble.ne)} {noble.nn}
-              </li>;
-            })
-          }
-        </ul>
-        <h2>弹幕</h2>
-        <ul>
-          {this.state.danmakus.map(item => {
-            // return <li key={item.cid}>
-            return <li>
-              {item.nl ? `贵族${item.nl} ` : ''}{item.bnn.length ? `[${item.bnn}${item.bl}] ` : ''}{item.nn}(lv.{item.level}): {item.txt}
-            </li>;
-          })}
-        </ul>
-      </div>
+      <Layout style={{
+        height: '100%',
+      }}>
+        <Header style={{
+          position: 'fixed',
+          top: 0,
+          width: '100vw',
+        }}>
+          <Popover placement='bottom' title='贵族top20' content={this.state.nobleList.map(noble => <p>{this.getNobleName(noble.ne)} {noble.nn}</p>)}>
+            <Button>贵族</Button>
+          </Popover>
+        </Header>
+        <Content style={{marginTop: 64}}><Danmakus danmakus={this.state.danmakus} /></Content>
+        <Footer>Footer</Footer>
+      </Layout>
+      // <div>
+      //   <h1>room {this.props.match.params.roomId}</h1>
+      //   <h2>top贵族</h2>
+      //   <span>
+      //     {
+      //       this.state.nobleInfo.list ?
+      //       `${this.state.nobleInfo.list.map(item => {
+      //         return `${this.getNobleName(item.lev)}${item.num}个 `;
+      //       })},共${this.state.nobleInfo.sum}个贵族`: null
+      //     }
+      //   </span>
+      //   <ul>
+      //     {
+      //       this.state.nobleList.map(noble => {
+      //         return <li>
+      //           {this.getNobleName(noble.ne)} {noble.nn}
+      //         </li>;
+      //       })
+      //     }
+      //   </ul>
+      //   <h2>弹幕</h2>
+      //   <ul>
+      //     {this.state.danmakus.map(item => {
+      //       // return <li key={item.cid}>
+      //       return <li>
+      //         {item.nl ? `贵族${item.nl} ` : ''}{item.bnn.length ? `[${item.bnn}${item.bl}] ` : ''}{item.nn}(lv.{item.level}): {item.txt}
+      //       </li>;
+      //     })}
+      //   </ul>
+      // </div>
     );
   }
 }

@@ -5,7 +5,7 @@ import { Menu } from 'antd';
 class GamesNavi extends Component {
   render() {
     return (
-      <Menu selectedKeys={this.props.selectedGame}>
+      <Menu selectedKeys={[this.props.selectedGame]}>
         {
           this.props.games.map(value => <Menu.Item key={value.short_name}>
             <Link to={`/games/${value.short_name}`}>{value.game_name}</Link>
