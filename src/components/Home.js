@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { Layout } from 'antd'
+import { connect } from 'react-redux';
+import { Layout } from 'antd';
 import GamesNavi from './GamesNavi';
 import Lives from './Lives';
 
 const { Sider, Content } = Layout;
+
+const GamesNaviContainer = connect(
+  // state => ({games: state.games})
+  state => ({games: state.games})
+)(GamesNavi);
 
 class Home extends Component {
   constructor(props){
@@ -19,7 +25,7 @@ class Home extends Component {
   }
 
   componentDidMount() {
-
+    this.props.loadGames();
     fetch('/RoomApi/game').then((response => {
       response.json().then(result => {
         if(!result.error) {
@@ -84,7 +90,9 @@ class Home extends Component {
           position: 'fixed',  // 位置被设置为 fixed 的元素，可定位于相对于浏览器窗口的指定坐标。此元素的位置可通过 "left"、"top"、"right" 以及"bottom" 属性来规定。不论窗口滚动与否，元素都会留在那个位置
           left: 0,  // 作用于position
         }}>
-          <GamesNavi selectedGame={this.state.chosenGame} games={this.state.games} />
+          {/* <GamesNavi selectedGame={this.state.chosenGame} games={this.state.games} /> */}
+          <GamesNaviContainer />
+          
         </Sider>
         <Content style={{
           marginLeft: 200,  // sider width is 200
