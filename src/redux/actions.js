@@ -1,6 +1,6 @@
 export default function loadGames() {
   return dispatch => {
-    return fetch('/RoomApi/game').then((response => {
+    return fetch('/api/RoomApi/game').then((response => {
       response.json().then(result => {
         if(!result.error) {
           dispatch({

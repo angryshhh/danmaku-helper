@@ -24,5 +24,13 @@
     "eslint": "^5.2.0",
     "eslint-plugin-react": "^7.10.0"
   },
-  "proxy": "http://open.douyucdn.cn/api"
+  "proxy": {
+    "/api": {
+      "target": "http://open.douyucdn.cn",
+      "changeOrigin": true
+    },
+    "/socket.io": {
+      "target": "http://localhost:3010"
+    }
+  }
 }

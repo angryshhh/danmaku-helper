@@ -3,7 +3,7 @@ import { Layout, Popover, Button, message } from 'antd';
 import io from 'socket.io-client';
 import Danmakus from './Danmakus';
 
-const { Header, Content, Footer, Sider} = Layout;
+const { Header, Content, Footer } = Layout;
 class Room extends Component {
   constructor(props) {
     super(props);
@@ -13,7 +13,9 @@ class Room extends Component {
       nobleInfo: {},
     };
 
-    this.socket = io('http://localhost:3010', { autoConnect: false });
+    // this.socket = io('http://localhost:3010', { autoConnect: false });
+    this.socket = io('', { autoConnect: false }); // socket request begin with '/sokect.io', handle it in proxy in package.json
+    // this.socket = io('http://192.168.1.195:3010', { autoConnect: false });
     this.socket.on('connect', () => {
       console.log('connect');
       this.socket.emit('roomId', this.props.match.params.roomId);

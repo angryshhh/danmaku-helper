@@ -26,7 +26,7 @@ class Home extends Component {
 
   componentDidMount() {
     this.props.loadGames();
-    fetch('/RoomApi/game').then((response => {
+    fetch('/api/RoomApi/game').then((response => {
       response.json().then(result => {
         if(!result.error) {
           this.setState({
@@ -75,9 +75,9 @@ class Home extends Component {
 
   createRoomApi(shortName) {
     if(shortName && shortName.length > 0) {
-      return `/RoomApi/live/${shortName}?offset=${this.state.offset}&limit=${this.state.limit}`;
+      return `/api/RoomApi/live/${shortName}?offset=${this.state.offset}&limit=${this.state.limit}`;
     } else {
-      return `/RoomApi/live?offset=${this.state.offset}&limit=${this.state.limit}`
+      return `/api/RoomApi/live?offset=${this.state.offset}&limit=${this.state.limit}`
     }
   }
 

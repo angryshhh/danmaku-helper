@@ -18,19 +18,19 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-function loadGames() {
-  fetch('/RoomApi/game').then((response => {
-    response.json().then(result => {
-      if(!result.error) {
-        console.log(result.data);
-        return result.data;
-      } else {
-        console.log(result.data);
-        return [];
-      }
-    })
-  })).catch(err => {
-    console('games fetch failed');
-    return [];
-  });
-}
+// function loadGames() {
+//   fetch('/RoomApi/game').then((response => {
+//     response.json().then(result => {
+//       if(!result.error) {
+//         console.log(result.data);
+//         return result.data;
+//       } else {
+//         console.log(result.data);
+//         return [];
+//       }
+//     })
+//   })).catch(err => {
+//     console('games fetch failed');
+//     return [];
+//   });
+// }
