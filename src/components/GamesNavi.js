@@ -4,7 +4,6 @@ import { Menu } from 'antd';
 
 class GamesNavi extends Component {
   render() {
-    console.log(this.props);
     return (
       <Menu selectedKeys={[this.props.selectedGame]}>
         {
