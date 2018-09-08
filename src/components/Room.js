@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Layout, Popover, Button, message } from 'antd';
+import { Layout, Popover, Button, message, Tag } from 'antd';
 import io from 'socket.io-client';
 import Danmakus from './Danmakus';
+import { getNoble } from '../utils/danmakuUtils';
 
 const { Header, Content, Footer } = Layout;
 class Room extends Component {
@@ -58,10 +59,14 @@ class Room extends Component {
           break;
         case 'uenter':
           // if(data.nl || data.fl > '10' || data.level > '20'){
-          if(parseInt(data.nl, 10) < 7 || parseInt(data.fl, 10) > 10) {
-            message.success(`${data.nl ? `${this.getNobleName(data.nl)} ` : ''}${data.nn} 进入房间${data.fl ? `，粉丝等级${data.fl}` : ''}`);
-
-            // console.log(`${data.nl ? `${this.getNobleName(data.nl)} ` : ''}${data.nn} 进入房间${data.fl ? `，粉丝等级${data.fl}` : ''}`);
+            // if(parseInt(data.nl, 10) < 7 || parseInt(data.fl, 10) > 10) {
+          if(parseInt(data.nl, 10) < 7){
+            message.open({
+              content: `${data.nn} 进入房间`,
+              duration: 2 ** (parseInt(data.nl, 10) % 7 + 1),
+              icon: data.nl ? <Tag color={getNoble(data.nl).tagColor}>{getNoble(data.nl).name}{parseInt(data.nl, 10) % 7 + 1}</Tag>  : null,
+            });
+            // console.log(`${data.nl ? `${getNoble(data.nl)} ` : ''}${data.nn} 进入房间${data.fl ? `，粉丝等级${data.fl}` : ''}`);
             // console.log(data);
           }
           break;
@@ -126,38 +131,18 @@ class Room extends Component {
     this.socket.close();
   }
 
-  getNobleName(nobleLevel) {
-    switch(nobleLevel) {
-      case '7':
-        return '游侠';
-      case '6':
-        return '皇帝';
-      case '5':
-        return '国王';
-      case '4':
-        return '公爵';
-      case '3':
-        return '伯爵';
-      case '2':
-        return '子爵';
-      case '1':
-        return '骑士';
-      default:
-        return '';
-    }
-  }
-
   render() {
     return (
       <Layout style={{
-        height: '100%',
+        // height: '100%',
+        height: '100vh'
       }}>
         <Header style={{
           position: 'fixed',
           top: 0,
           width: '100vw',
         }}>
-          <Popover placement='bottom' title='贵族top20' content={this.state.nobleList.map(noble => <p>{this.getNobleName(noble.ne)} {noble.nn}</p>)}>
+          <Popover placement='bottom' title='贵族top20' content={this.state.nobleList.map(noble => <p>{getNoble(noble.ne).name} {noble.nn}</p>)}>
             <Button>贵族</Button>
           </Popover>
         </Header>
@@ -171,7 +156,7 @@ class Room extends Component {
       //     {
       //       this.state.nobleInfo.list ?
       //       `${this.state.nobleInfo.list.map(item => {
-      //         return `${this.getNobleName(item.lev)}${item.num}个 `;
+      //         return `${getNoble(item.lev)}${item.num}个 `;
       //       })},共${this.state.nobleInfo.sum}个贵族`: null
       //     }
       //   </span>
@@ -179,7 +164,7 @@ class Room extends Component {
       //     {
       //       this.state.nobleList.map(noble => {
       //         return <li>
-      //           {this.getNobleName(noble.ne)} {noble.nn}
+      //           {getNoble(noble.ne)} {noble.nn}
       //         </li>;
       //       })
       //     }
