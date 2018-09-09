@@ -14,9 +14,10 @@ class Room extends Component {
       nobleInfo: {},
     };
 
-    // this.socket = io('http://localhost:3010', { autoConnect: false });
-    this.socket = io('', { autoConnect: false }); // socket request begin with '/sokect.io', handle it in proxy in package.json
     // this.socket = io('http://192.168.1.195:3010', { autoConnect: false });
+    // this.socket = io('http://localhost:3010', { autoConnect: false });
+    // socket request begin with '/sokect.io', handle it in proxy in package.json
+    this.socket = io('', { autoConnect: false });
     this.socket.on('connect', () => {
       console.log('connect');
       this.socket.emit('roomId', this.props.match.params.roomId);
@@ -64,7 +65,7 @@ class Room extends Component {
             message.open({
               content: `${data.nn} 进入房间`,
               duration: 2 ** (parseInt(data.nl, 10) % 7 + 1),
-              icon: data.nl ? <Tag color={getNoble(data.nl).tagColor}>{getNoble(data.nl).name}{parseInt(data.nl, 10) % 7 + 1}</Tag>  : null,
+              icon: data.nl ? <Tag color={getNoble(data.nl).tagColor}>{getNoble(data.nl).name}</Tag>  : null,
             });
             // console.log(`${data.nl ? `${getNoble(data.nl)} ` : ''}${data.nn} 进入房间${data.fl ? `，粉丝等级${data.fl}` : ''}`);
             // console.log(data);
@@ -124,7 +125,6 @@ class Room extends Component {
 
   componentDidMount() {
     this.socket.open();
-    
   }
 
   componentWillUnmount() {
@@ -137,48 +137,15 @@ class Room extends Component {
         // height: '100%',
         height: '100vh'
       }}>
-        <Header style={{
-          position: 'fixed',
-          top: 0,
-          width: '100vw',
-        }}>
+        <Header>
           <Popover placement='bottom' title='贵族top20' content={this.state.nobleList.map(noble => <p>{getNoble(noble.ne).name} {noble.nn}</p>)}>
             <Button>贵族</Button>
           </Popover>
         </Header>
-        <Content style={{marginTop: 64}}><Danmakus danmakus={this.state.danmakus} /></Content>
-        <Footer>Footer</Footer>
+        <Danmakus danmakus={this.state.danmakus} />
+        {/* Content's children cant get the height of Content by height: '100%' */}
+        <Footer style={{backgroundColor: 'black'}}>Footer</Footer>
       </Layout>
-      // <div>
-      //   <h1>room {this.props.match.params.roomId}</h1>
-      //   <h2>top贵族</h2>
-      //   <span>
-      //     {
-      //       this.state.nobleInfo.list ?
-      //       `${this.state.nobleInfo.list.map(item => {
-      //         return `${getNoble(item.lev)}${item.num}个 `;
-      //       })},共${this.state.nobleInfo.sum}个贵族`: null
-      //     }
-      //   </span>
-      //   <ul>
-      //     {
-      //       this.state.nobleList.map(noble => {
-      //         return <li>
-      //           {getNoble(noble.ne)} {noble.nn}
-      //         </li>;
-      //       })
-      //     }
-      //   </ul>
-      //   <h2>弹幕</h2>
-      //   <ul>
-      //     {this.state.danmakus.map(item => {
-      //       // return <li key={item.cid}>
-      //       return <li>
-      //         {item.nl ? `贵族${item.nl} ` : ''}{item.bnn.length ? `[${item.bnn}${item.bl}] ` : ''}{item.nn}(lv.{item.level}): {item.txt}
-      //       </li>;
-      //     })}
-      //   </ul>
-      // </div>
     );
   }
 }
