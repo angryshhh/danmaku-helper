@@ -1,10 +1,33 @@
 import React, { Component } from 'react';
-import { Layout, Popover, Button, message, Tag } from 'antd';
+import { connect } from 'react-redux';
+import { Layout, Popover, Button, message, Tag, Row, Col } from 'antd';
 import io from 'socket.io-client';
 import Danmakus from './Danmakus';
 import { getNoble } from '../utils/danmakuUtils';
+import { changeNobleDanmakuFilter } from '../redux/actions';
 
 const { Header, Content, Footer } = Layout;
+
+const DanmakusContainer = connect(
+  state => ({
+    danmakus: state.danmakus,
+    title: '弹幕',
+  })
+)(Danmakus);
+
+const FilteredDanmakusContainer = connect(
+  state => ({
+    danmakus: state.filteredDanmakus,
+    nobleDanmakuFilter: state.nobleDanmakuFilter,
+    title: '过滤弹幕',
+  }),
+  dispatch => ({
+    changeNobleDanmakuFilter: (nobleLevel) => {
+      dispatch(changeNobleDanmakuFilter(nobleLevel));
+    },
+  })
+)(Danmakus);
+
 class Room extends Component {
   constructor(props) {
     super(props);
@@ -37,9 +60,10 @@ class Room extends Component {
     this.socket.on('message', data => {
       switch(data.type) {
         case 'chatmsg':
-           this.setState({
-            danmakus: [...this.state.danmakus.slice(-39), data],  // limit the danmaku list length to 40
-          });
+          // this.setState({
+          //   danmakus: [...this.state.danmakus.slice(-399), data],  // limit the danmaku list length to 400
+          // });
+          this.props.receiveDanmaku(data);
           break;
         case 'dgb':
           if(data.bg)
@@ -135,15 +159,22 @@ class Room extends Component {
     return (
       <Layout style={{
         // height: '100%',
-        height: '100vh'
+        height: '100vh',
       }}>
         <Header>
-          <Popover placement='bottom' title='贵族top20' content={this.state.nobleList.map(noble => <p>{getNoble(noble.ne).name} {noble.nn}</p>)}>
+          <Popover placement='bottom' title='贵族top20' content={this.state.nobleList.map(noble => <p key={noble.uid}>{getNoble(noble.ne).name} {noble.nn}</p>)}>
             <Button>贵族</Button>
           </Popover>
         </Header>
-        <Danmakus danmakus={this.state.danmakus} />
-        {/* Content's children cant get the height of Content by height: '100%' */}
+        {/* <Danmakus danmakus={this.state.danmakus} /> */}
+        <Layout style={{height: '100%', overflow: 'auto', backgroundColor: 'pink'}}>
+          {/* <Content style={{height: '100%', overflow: 'auto'}}> */}
+            <Row style={{height: '100%', overflow: 'auto'}}>
+              <Col span={12} style={{height: '100%', overflow: 'auto'}}><DanmakusContainer /></Col>
+              <Col span={12} style={{height: '100%', overflow: 'auto'}}><FilteredDanmakusContainer /></Col>
+            </Row>
+          {/* </Content> */}
+        </Layout>
         <Footer style={{backgroundColor: 'black'}}>Footer</Footer>
       </Layout>
     );

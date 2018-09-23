@@ -4,7 +4,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider, connect } from 'react-redux';
 import thunk from 'redux-thunk';
 import { reducer } from './redux/reducer';
-import { loadGames, loadLives, chooseGame } from './redux/actions';
+import { loadGames, loadLives, chooseGame, receiveDanmaku } from './redux/actions';
 import Home from './components/Home';
 import Room from './components/Room';
 import './App.css';
@@ -31,6 +31,15 @@ const HomeContainer = connect(
     }
   }
 )(Home);
+
+const RoomContainer = connect(
+  state => ({}),
+  dispatch => ({
+    receiveDanmaku: danmaku => {
+      dispatch(receiveDanmaku(danmaku));
+    },
+  })
+)(Room);
 class App extends Component {
   render() {
     return (
@@ -39,7 +48,8 @@ class App extends Component {
           <Switch>
             <Route exact path='/' component={HomeContainer} />
             <Route path='/games/:shortName' component={HomeContainer} />
-            <Route path='/room/:roomId' component={Room} />
+            {/* <Route path='/room/:roomId' component={Room} /> */}
+            <Route path='/room/:roomId' component={RoomContainer} />
           </Switch>
         </BrowserRouter>
       </Provider>

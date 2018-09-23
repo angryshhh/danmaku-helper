@@ -42,6 +42,20 @@ export function loadLives(gameShortName, offset, limit) {
 export function chooseGame(chosenGame) {
   return {
     type: 'CHOOSE_GAME',
-    chosenGame: chosenGame,
+    chosenGame,
+  }
+}
+
+export function receiveDanmaku(danmaku) {
+  return {
+    type: 'RECEIVE_DANMAKU',
+    danmaku,
+  }
+}
+
+export function changeNobleDanmakuFilter(nobleLevel) {
+  return {
+    type: 'CHANGE_NOBLE_DANMAKU_FILTER',
+    nobleLevel,
   }
 }

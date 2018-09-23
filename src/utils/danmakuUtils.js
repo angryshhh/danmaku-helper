@@ -22,3 +22,15 @@ export function getNoble(nobleLevel) {
 function noble(name, tagColor, messageTime){
   return {name, tagColor, messageTime};
 }
+
+export function nobleMarksForSlider() {
+  return {
+    0: '游侠',
+    1: '骑士',
+    2: '子爵',
+    3: '伯爵',
+    4: '公爵',
+    5: '国王',
+    6: '皇帝',
+  };
+}
