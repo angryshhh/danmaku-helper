@@ -59,3 +59,10 @@ export function changeNobleDanmakuFilter(nobleLevel) {
     nobleLevel,
   }
 }
+
+export function changeNobleEnterMessageFilter(nobleLevel) {
+  return {
+    type: 'CHANGE_NOBLE_ENTER_MESSAGE_FILTER',
+    nobleLevel,
+  }
+}

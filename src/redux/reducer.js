@@ -7,6 +7,8 @@ const initialState = {
   offset: 0,
   limit: 30,
 
+  nobleEnterMessageFilter: 3,
+
   danmakus: [],
   danmakusLimit: 60,
 
@@ -48,6 +50,11 @@ export function reducer(state = initialState, action) {
       return {
         ...state,
         nobleDanmakuFilter: action.nobleLevel,
+      }
+    case 'CHANGE_NOBLE_ENTER_MESSAGE_FILTER':
+      return {
+        ...state,
+        nobleEnterMessageFilter: action.nobleLevel
       }
     default:
       return state;

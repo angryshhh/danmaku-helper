@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Layout, Popover, Button, message, Tag, Row, Col } from 'antd';
+import { Layout, Popover, Button, message, Tag, Row, Col, InputNumber } from 'antd';
 import io from 'socket.io-client';
 import Danmakus from './Danmakus';
 import { getNoble } from '../utils/danmakuUtils';
@@ -32,7 +32,6 @@ class Room extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      danmakus: [],
       nobleList: [],
       nobleInfo: {},
     };
@@ -85,7 +84,7 @@ class Room extends Component {
         case 'uenter':
           // if(data.nl || data.fl > '10' || data.level > '20'){
             // if(parseInt(data.nl, 10) < 7 || parseInt(data.fl, 10) > 10) {
-          if(parseInt(data.nl, 10) < 7){
+          if(parseInt(data.nl, 10) % 7 >= this.props.nobleEnterMessageFilter){
             message.open({
               content: `${data.nn} 进入房间`,
               duration: 2 ** (parseInt(data.nl, 10) % 7 + 1),
@@ -165,6 +164,7 @@ class Room extends Component {
           <Popover placement='bottom' title='贵族top20' content={this.state.nobleList.map(noble => <p key={noble.uid}>{getNoble(noble.ne).name} {noble.nn}</p>)}>
             <Button>贵族</Button>
           </Popover>
+          <span style={{color: 'pink'}}>贵族进入提醒初始等级</span><InputNumber min={0} max={6} step={1} size='small' value={this.props.nobleEnterMessageFilter} onChange={value => {this.props.changeNobleEnterMessageFilter(value)}} />
         </Header>
         {/* <Danmakus danmakus={this.state.danmakus} /> */}
         <Layout style={{height: '100%', overflow: 'auto', backgroundColor: 'pink'}}>
