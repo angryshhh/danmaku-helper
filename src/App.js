@@ -19,15 +19,9 @@ const HomeContainer = connect(
   }), 
   dispatch => {
     return {
-      loadGames: () => {
-        dispatch(loadGames());
-      },
-      loadLives: (chosenGame, offset, limit) => {
-        dispatch(loadLives(chosenGame, offset, limit));
-      },
-      chooseGame: (shortName) => {
-        dispatch(chooseGame(shortName));
-      },
+      loadGames: () => dispatch(loadGames()),
+      loadLives: (chosenGame, offset, limit) => dispatch(loadLives(chosenGame, offset, limit)),
+      chooseGame: shortName => dispatch(chooseGame(shortName)),
     }
   }
 )(Home);
@@ -37,12 +31,8 @@ const RoomContainer = connect(
     nobleEnterMessageFilter: state.nobleEnterMessageFilter,
   }),
   dispatch => ({
-    receiveDanmaku: danmaku => {
-      dispatch(receiveDanmaku(danmaku));
-    },
-    changeNobleEnterMessageFilter: nobleLevle => {
-      dispatch(changeNobleEnterMessageFilter(nobleLevle));
-    },
+    receiveDanmaku: danmaku => dispatch(receiveDanmaku(danmaku)),
+    changeNobleEnterMessageFilter: nobleLevle => dispatch(changeNobleEnterMessageFilter(nobleLevle)),
   })
 )(Room);
 class App extends Component {

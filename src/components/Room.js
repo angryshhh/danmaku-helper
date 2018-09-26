@@ -4,14 +4,18 @@ import { Layout, Popover, Button, message, Tag, Row, Col, InputNumber } from 'an
 import io from 'socket.io-client';
 import Danmakus from './Danmakus';
 import { getNoble } from '../utils/danmakuUtils';
-import { changeNobleDanmakuFilter } from '../redux/actions';
+import { changeNobleDanmakuFilter, changeDanmakusLimit, changeFilteredDanmakusLimit } from '../redux/actions';
 
-const { Header, Content, Footer } = Layout;
+const { Header, Footer } = Layout;
 
 const DanmakusContainer = connect(
   state => ({
     danmakus: state.danmakus,
+    danmakusLimit: state.danmakusLimit,
     title: '弹幕',
+  }),
+  dispatch => ({
+    changeDanmakusLimit: limit => dispatch(changeDanmakusLimit(limit)),
   })
 )(Danmakus);
 
@@ -19,12 +23,12 @@ const FilteredDanmakusContainer = connect(
   state => ({
     danmakus: state.filteredDanmakus,
     nobleDanmakuFilter: state.nobleDanmakuFilter,
+    filteredDanmakusLimit: state.filteredDanmakusLimit,
     title: '过滤弹幕',
   }),
   dispatch => ({
-    changeNobleDanmakuFilter: (nobleLevel) => {
-      dispatch(changeNobleDanmakuFilter(nobleLevel));
-    },
+    changeNobleDanmakuFilter: nobleLevel => dispatch(changeNobleDanmakuFilter(nobleLevel)),
+    changeFilteredDanmakusLimit: limit => dispatch(changeFilteredDanmakusLimit(limit)),
   })
 )(Danmakus);
 
@@ -65,9 +69,10 @@ class Room extends Component {
           this.props.receiveDanmaku(data);
           break;
         case 'dgb':
-          if(data.bg)
-            message.success(`${data.nn}送了${data.gfid}礼物X${data.hits}，显示为${data.gs}，特效${data.eid}，大小礼物${data.bg}`);
-            // console.log(`${data.nn}送了${data.gfid}礼物X${data.hits}，显示为${data.gs}，特效${data.eid}，大小礼物${data.bg}`);
+          // if(data.bg)
+          //   message.success(`${data.nn}送了${data.gfid}礼物X${data.hits}，显示为${data.gs}，特效${data.eid}，大小礼物${data.bg}`);
+            
+          // console.log(`${data.nn}送了${data.gfid}礼物X${data.hits}，显示为${data.gs}，特效${data.eid}，大小礼物${data.bg}`);
           // gfid: 824粉丝荧光棒, 192赞， 714怂， 193弱鸡， 520稳， 191鱼丸
           // 我他妈不研究了，在弹幕里一个一个扒（我是不是应该学个爬虫），还是大礼物好找
           // 447办卡，195飞机，显示为5，特效63，大小礼物1
@@ -157,7 +162,6 @@ class Room extends Component {
   render() {
     return (
       <Layout style={{
-        // height: '100%',
         height: '100vh',
       }}>
         <Header>
@@ -166,7 +170,6 @@ class Room extends Component {
           </Popover>
           <span style={{color: 'pink'}}>贵族进入提醒初始等级</span><InputNumber min={0} max={6} step={1} size='small' value={this.props.nobleEnterMessageFilter} onChange={value => {this.props.changeNobleEnterMessageFilter(value)}} />
         </Header>
-        {/* <Danmakus danmakus={this.state.danmakus} /> */}
         <Layout style={{height: '100%', overflow: 'auto', backgroundColor: 'pink'}}>
           {/* <Content style={{height: '100%', overflow: 'auto'}}> */}
             <Row style={{height: '100%', overflow: 'auto'}}>

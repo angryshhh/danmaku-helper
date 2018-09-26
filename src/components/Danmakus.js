@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Tag, Input, Slider, Popover, Button, List } from 'antd';
+import { Card, Slider, Popover, Button, InputNumber } from 'antd';
 import { getNoble, nobleMarksForSlider } from '../utils/danmakuUtils';
 
 class Danmakus extends Component {
@@ -8,10 +8,37 @@ class Danmakus extends Component {
     let filters;
     if(this.props.title === '过滤弹幕') {
       filters = <Popover content={[
-        <Slider marks={nobleMarksForSlider()} value={this.props.nobleDanmakuFilter} defaultValue={6} min={0} max={6} dots={true} onChange={value => {this.props.changeNobleDanmakuFilter(value);}} />,        
+        // <Slider
+        //   marks={nobleMarksForSlider()}
+        //   value={this.props.nobleDanmakuFilter}
+        //   onChange={value => {this.props.changeNobleDanmakuFilter(value);}}
+        //   defaultValue={6} min={0} max={6} dots={true} />,
+        '贵族起始等级：',
+        <InputNumber
+          value={this.props.nobleDanmakuFilter}
+          onChange={value => this.props.changeNobleDanmakuFilter(value)}
+          min={0} max={6} step={1} size='small' />,
+        <br />,
+        '弹幕数量：',
+        <InputNumber
+          value={this.props.filteredDanmakusLimit}
+          onChange={value => this.props.changeFilteredDanmakusLimit(value)}
+          min={50} max={500} step={50} size='small' />,
+        <br />,
       ]} title='过滤条件' placement='leftTop' trigger='click'>
         <Button size='small'>过滤条件</Button>
       </Popover>;
+    } else {
+      filters = <Popover content={[
+        '弹幕数量：',
+        <InputNumber
+          value={this.props.danmakusLimit}
+          onChange={value => this.props.changeDanmakusLimit(value)}
+          min={50} max={500} step={50} size='small' />,
+        <br />,
+      ]} title='弹幕数量' placement='leftTop' trigger='click'>
+        <Button size='small'>弹幕数量</Button>
+      </Popover>
     }
     return (
       

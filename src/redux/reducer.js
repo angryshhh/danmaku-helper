@@ -7,12 +7,12 @@ const initialState = {
   offset: 0,
   limit: 30,
 
-  nobleEnterMessageFilter: 3,
+  nobleEnterMessageFilter: 0,
 
   danmakus: [],
-  danmakusLimit: 60,
+  danmakusLimit: 50,
 
-  nobleDanmakuFilter: 3,  // 0-6, 游侠到国王，协议里是7，1-6
+  nobleDanmakuFilter: 0,  // 0-6, 游侠到国王，协议里是7，1-6
   filteredDanmakusLimit: 100,
   filteredDanmakus: [],
 }
@@ -23,17 +23,17 @@ export function reducer(state = initialState, action) {
       return {
         ...state,
         games: action.data,
-      }
+      };
     case 'RECEIVE_LIVES':
       return {
         ...state,
         lives: action.data,
-      }
+      };
     case 'CHOOSE_GAME':
       return {
         ...state,
         chosenGame: action.chosenGame,
-      }
+      };
     case 'RECEIVE_DANMAKU':
       let { danmaku } = action;
       let danmakus = [...state.danmakus.slice(1 - state.danmakusLimit), danmaku];
@@ -45,17 +45,27 @@ export function reducer(state = initialState, action) {
         ...state,
         danmakus,
         filteredDanmakus,
-      }
+      };
     case 'CHANGE_NOBLE_DANMAKU_FILTER':
       return {
         ...state,
         nobleDanmakuFilter: action.nobleLevel,
-      }
+      };
     case 'CHANGE_NOBLE_ENTER_MESSAGE_FILTER':
       return {
         ...state,
-        nobleEnterMessageFilter: action.nobleLevel
-      }
+        nobleEnterMessageFilter: action.nobleLevel,
+      };
+    case 'CHANGE_DANMAKUS_LIMIT':
+      return {
+        ...state,
+        danmakusLimit: action.limit,
+      };
+    case 'CHANGE_FILTERED_DANMAKUS_LIMIT':
+      return {
+        ...state,
+        filteredDanmakusLimit: action.limit,
+      };
     default:
       return state;
   }
