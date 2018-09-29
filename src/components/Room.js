@@ -36,7 +36,6 @@ class Room extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      nobleList: [],
       nobleInfo: {},
     };
 
@@ -100,7 +99,7 @@ class Room extends Component {
           }
           break;
         case 'online_noble_list':
-          this.setState({nobleList: data.nl});
+          this.props.receiveNobleList(data.nl);
           break;
         case 'noble_num_info':
           this.setState({nobleInfo: data});
@@ -165,7 +164,7 @@ class Room extends Component {
         height: '100vh',
       }}>
         <Header>
-          <Popover placement='bottom' title='贵族top20' content={this.state.nobleList.map(noble => <p key={noble.uid}>{getNoble(noble.ne).name} {noble.nn}</p>)}>
+          <Popover placement='bottom' title='贵族top20' content={this.props.nobleList.map(noble => <p key={noble.uid}>{getNoble(noble.ne).name} {noble.nn}</p>)}>
             <Button>贵族</Button>
           </Popover>
           <span style={{color: 'pink'}}>贵族进入提醒初始等级</span><InputNumber min={0} max={6} step={1} size='small' value={this.props.nobleEnterMessageFilter} onChange={value => {this.props.changeNobleEnterMessageFilter(value)}} />

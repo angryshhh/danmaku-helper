@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Card, Slider, Popover, Button, InputNumber } from 'antd';
-import { getNoble, nobleMarksForSlider } from '../utils/danmakuUtils';
+import { Card, Popover, Button, InputNumber } from 'antd';
+import { getNoble } from '../utils/danmakuUtils';
 
 class Danmakus extends Component {
   
@@ -8,11 +8,6 @@ class Danmakus extends Component {
     let filters;
     if(this.props.title === '过滤弹幕') {
       filters = <Popover content={[
-        // <Slider
-        //   marks={nobleMarksForSlider()}
-        //   value={this.props.nobleDanmakuFilter}
-        //   onChange={value => {this.props.changeNobleDanmakuFilter(value);}}
-        //   defaultValue={6} min={0} max={6} dots={true} />,
         '贵族起始等级：',
         <InputNumber
           value={this.props.nobleDanmakuFilter}

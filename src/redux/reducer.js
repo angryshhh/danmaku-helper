@@ -8,6 +8,7 @@ const initialState = {
   limit: 30,
 
   nobleEnterMessageFilter: 0,
+  nobleList: [],
 
   danmakus: [],
   danmakusLimit: 50,
@@ -65,6 +66,11 @@ export function reducer(state = initialState, action) {
       return {
         ...state,
         filteredDanmakusLimit: action.limit,
+      };
+    case 'RECEIVE_NOBLE_LIST':
+      return {
+        ...state,
+        nobleList: action.nobleList,
       };
     default:
       return state;

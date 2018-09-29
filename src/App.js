@@ -4,7 +4,14 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider, connect } from 'react-redux';
 import thunk from 'redux-thunk';
 import { reducer } from './redux/reducer';
-import { loadGames, loadLives, chooseGame, receiveDanmaku, changeNobleEnterMessageFilter } from './redux/actions';
+import { 
+  loadGames,
+  loadLives,
+  chooseGame,
+  receiveDanmaku,
+  changeNobleEnterMessageFilter,
+  receiveNobleList,
+} from './redux/actions';
 import Home from './components/Home';
 import Room from './components/Room';
 import './App.css';
@@ -29,10 +36,12 @@ const HomeContainer = connect(
 const RoomContainer = connect(
   state => ({
     nobleEnterMessageFilter: state.nobleEnterMessageFilter,
+    nobleList: state.nobleList,
   }),
   dispatch => ({
     receiveDanmaku: danmaku => dispatch(receiveDanmaku(danmaku)),
     changeNobleEnterMessageFilter: nobleLevle => dispatch(changeNobleEnterMessageFilter(nobleLevle)),
+    receiveNobleList: nobleList => dispatch(receiveNobleList(nobleList)),
   })
 )(Room);
 class App extends Component {

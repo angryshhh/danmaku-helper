@@ -80,3 +80,10 @@ export function changeFilteredDanmakusLimit(limit) {
     limit,
   };
 }
+
+export function receiveNobleList(nobleList) {
+  return {
+    type: 'RECEIVE_NOBLE_LIST',
+    nobleList,
+  };
+}
