@@ -87,3 +87,13 @@ export function receiveNobleList(nobleList) {
     nobleList,
   };
 }
+
+export function receiveNobleNumInfo(info) {
+  return {
+    type: 'RECEIVE_NOBLE_NUM_INFO',
+    info: {
+      list: info.list,
+      sum: info.sum,
+    },
+  };
+}

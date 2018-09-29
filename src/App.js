@@ -11,6 +11,7 @@ import {
   receiveDanmaku,
   changeNobleEnterMessageFilter,
   receiveNobleList,
+  receiveNobleNumInfo,
 } from './redux/actions';
 import Home from './components/Home';
 import Room from './components/Room';
@@ -37,11 +38,13 @@ const RoomContainer = connect(
   state => ({
     nobleEnterMessageFilter: state.nobleEnterMessageFilter,
     nobleList: state.nobleList,
+    nobleNumInfo: state.nobleNumInfo,
   }),
   dispatch => ({
     receiveDanmaku: danmaku => dispatch(receiveDanmaku(danmaku)),
     changeNobleEnterMessageFilter: nobleLevle => dispatch(changeNobleEnterMessageFilter(nobleLevle)),
     receiveNobleList: nobleList => dispatch(receiveNobleList(nobleList)),
+    receiveNobleNumInfo: info => dispatch(receiveNobleNumInfo(info)),
   })
 )(Room);
 class App extends Component {

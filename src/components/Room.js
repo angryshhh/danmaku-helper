@@ -35,9 +35,6 @@ const FilteredDanmakusContainer = connect(
 class Room extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      nobleInfo: {},
-    };
 
     // this.socket = io('http://192.168.1.195:3010', { autoConnect: false });
     // this.socket = io('http://localhost:3010', { autoConnect: false });
@@ -62,9 +59,6 @@ class Room extends Component {
     this.socket.on('message', data => {
       switch(data.type) {
         case 'chatmsg':
-          // this.setState({
-          //   danmakus: [...this.state.danmakus.slice(-399), data],  // limit the danmaku list length to 400
-          // });
           this.props.receiveDanmaku(data);
           break;
         case 'dgb':
@@ -94,15 +88,13 @@ class Room extends Component {
               duration: 2 ** (parseInt(data.nl, 10) % 7 + 1),
               icon: data.nl ? <Tag color={getNoble(data.nl).tagColor}>{getNoble(data.nl).name}</Tag>  : null,
             });
-            // console.log(`${data.nl ? `${getNoble(data.nl)} ` : ''}${data.nn} 进入房间${data.fl ? `，粉丝等级${data.fl}` : ''}`);
-            // console.log(data);
           }
           break;
         case 'online_noble_list':
           this.props.receiveNobleList(data.nl);
           break;
         case 'noble_num_info':
-          this.setState({nobleInfo: data});
+          this.props.receiveNobleNumInfo(data);
           break;
         case 'newblackres':
           console.log(`${data.otype === '1' ? '房管' : data.otype === '2' ? '主播' : data.otype === '3' ? '超管' : ''} ${data.snic} 封了 ${data.dnic} 直到${data.endtime}`);
@@ -165,7 +157,7 @@ class Room extends Component {
       }}>
         <Header>
           <Popover placement='bottom' title='贵族top20' content={this.props.nobleList.map(noble => <p key={noble.uid}>{getNoble(noble.ne).name} {noble.nn}</p>)}>
-            <Button>贵族</Button>
+            <Button>{this.props.nobleNumInfo.sum}贵族</Button>
           </Popover>
           <span style={{color: 'pink'}}>贵族进入提醒初始等级</span><InputNumber min={0} max={6} step={1} size='small' value={this.props.nobleEnterMessageFilter} onChange={value => {this.props.changeNobleEnterMessageFilter(value)}} />
         </Header>
