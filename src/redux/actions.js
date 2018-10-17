@@ -6,6 +6,7 @@ export function loadGames() {
           dispatch({
             type: 'RECEIVE_GAMES',
             data: result.data,
+            
           });
         } else {
           
